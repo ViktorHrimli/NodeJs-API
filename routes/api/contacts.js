@@ -1,6 +1,6 @@
 const express = require("express");
-const { success, failed } = require("./code");
-const { validationShema, validationPutShema } = require("./validationShema");
+const { success, failed } = require("../../utils/code");
+const { validatePuttReq, validatePostReq } = require("../../utils/checkReq");
 const {
   listContacts,
   getContactById,
@@ -15,7 +15,6 @@ const errorMessage = "Not found";
 router.get("/", async (req, res, next) => {
   try {
     const userList = await listContacts();
-
     if (!userList) return res.json(failed(400, errorMessage));
 
     res.json(success(200, userList));
@@ -38,16 +37,11 @@ router.get("/:contactId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const { name, email, phone } = req.body;
-    const { error } = validationShema.validate({
-      name,
-      email,
-      phone,
-    });
+    const body = req.body;
+    const validateReq = await validatePostReq(body);
+    if (validateReq) return res.json(failed(400, validateReq.message));
 
-    if (error) return res.json(failed(400, error.message));
-    const newUser = await addContact(name, email, phone);
-
+    const newUser = await addContact(body);
     res.json(success(201, newUser));
   } catch (error) {
     res.json(failed(404, errorMessage));
@@ -69,13 +63,11 @@ router.put("/:contactId", async (req, res, next) => {
   try {
     const id = req.params.contactId;
     const body = req.body;
-    const { error } = validationPutShema.validate({
-      name: body.name,
-      email: body.email,
-      phone: body.phone,
-    });
+    const errorField = await validatePuttReq(body);
 
-    if (error) return res.json(failed(400, error.message));
+    if (errorField === null) {
+      return res.json(failed(400, "error, check correct response "));
+    }
 
     const updateUser = await updateContact(id, body);
 

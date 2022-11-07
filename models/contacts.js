@@ -23,14 +23,12 @@ const removeContact = async (contactId) => {
   return "contact deleted";
 };
 
-const addContact = async (name, email, phone) => {
+const addContact = async (body) => {
   const list = await getUserList();
 
   const newUser = {
     id: String(list.length + 1),
-    name,
-    email,
-    phone,
+    ...body,
   };
   list.push(newUser);
   await fs.writeFile(contactsPath, JSON.stringify(list));
