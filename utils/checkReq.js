@@ -1,6 +1,6 @@
 const { validationPutShema, validationShema } = require("./validationShema");
 
-const validatePuttReq = async (body) => {
+const validatePutReq = async (body) => {
   let inValid = true;
   if (!body.name && !body.email && !body.phone) return (inValid = null);
 
@@ -27,6 +27,6 @@ const validatePostReq = async (body) => {
 };
 
 module.exports = {
-  validatePuttReq,
+  validatePutReq,
   validatePostReq,
 };
