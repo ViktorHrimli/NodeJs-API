@@ -1,17 +1,18 @@
 const Joi = require("joi");
 
-const validationShema = Joi.object({
+const postShema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
   email: Joi.string()
     .email({
-      minDomainSegments: 3,
+      minDomainSegments: 1,
       tlds: { allow: ["com", "net", "org"] },
     })
     .required(),
   phone: Joi.string().min(8).max(14).required(),
+  favorite: Joi.boolean(),
 });
 
-const validationPutShema = Joi.object({
+const putShema = Joi.object({
   name: Joi.string().min(3).max(30),
   email: Joi.string().email({
     minDomainSegments: 2,
@@ -20,4 +21,14 @@ const validationPutShema = Joi.object({
   phone: Joi.string().min(8).max(14),
 });
 
-module.exports = { validationShema, validationPutShema };
+const patchShema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
+
+const shemaBody = {
+  postShema,
+  putShema,
+  patchShema,
+};
+
+module.exports = { shemaBody };
