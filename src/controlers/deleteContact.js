@@ -8,9 +8,9 @@ const deleteContacts = async (req, res) => {
     const id = req.params.contactId;
     const removeUser = await removeContact(id);
 
-    res.json(success(200, removeUser));
+    res.status(200).json(success(200, removeUser));
   } catch (error) {
-    res.json(failed(404, errorMessage));
+    res.status(404).json(failed(404, errorMessage));
   }
 };
 

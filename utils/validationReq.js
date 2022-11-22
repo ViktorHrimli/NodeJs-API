@@ -1,20 +1,17 @@
 const { shemaBody } = require("../service/shemas/requestShema");
 
 const isValidPutReq = async (body) => {
-  let inValid = true;
   if (!body.name && !body.email && !body.phone) {
-    return (inValid = null);
+    return null;
   }
-
   const { error } = shemaBody.putShema.validate({
     name: body.name,
     email: body.email,
     phone: body.phone,
   });
 
-  inValid = error ? null : true;
-
-  return inValid;
+  if (!error) return true;
+  return null;
 };
 
 const isValidPostReq = async (body) => {
@@ -30,12 +27,13 @@ const isValidPostReq = async (body) => {
 };
 
 const isValidPatchReq = async (body) => {
+  let isValid = true;
   const { error } = shemaBody.patchShema.validate({
     favorite: body.favorite,
   });
 
-  if (!error) return;
-  return error;
+  isValid = error ? null : true;
+  return isValid;
 };
 
 module.exports = {

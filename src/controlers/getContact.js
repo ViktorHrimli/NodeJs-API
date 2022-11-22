@@ -9,9 +9,9 @@ const getContactsId = async (req, res) => {
     const userId = await getContactById(id);
     if (!userId) return res.json(failed(400, errorMessage));
 
-    res.json(success(200, userId));
+    res.status(200).json(success(200, userId));
   } catch (error) {
-    res.json(failed(404, errorMessage));
+    res.status(404).json(failed(404, errorMessage));
   }
 };
 

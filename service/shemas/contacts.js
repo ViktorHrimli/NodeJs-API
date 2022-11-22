@@ -22,10 +22,9 @@ const contactsShema = new Shema(
 );
 
 const handleError = (error, data, next) => {
-  console.log(error);
   const { code } = error;
-  if (!code) {
-    error.status = 400;
+  if (code) {
+    error.status(400);
   }
   next();
 };

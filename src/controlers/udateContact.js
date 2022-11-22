@@ -10,9 +10,9 @@ const updateContacts = async (req, res, next) => {
 
     const updateUser = await updateContact(id, body);
 
-    res.json(success(200, updateUser));
+    res.status(200).json(success(200, updateUser));
   } catch (error) {
-    res.json(failed(404, errorMessage));
+    res.status(404).json(failed(404, errorMessage));
   }
 };
 

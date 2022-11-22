@@ -26,7 +26,6 @@ const addContact = async (body) => {
 };
 
 const updateContact = async (id, body) => {
-  console.log(body);
   const udateUser = await Contact.findByIdAndUpdate(id, body, { new: true });
   return udateUser;
 };

@@ -7,9 +7,9 @@ const getContacts = async (req, res) => {
     const userList = await listContacts();
     if (!userList) return res.json(failed(400, errorMessage));
 
-    res.json(success(200, userList));
+    res.status(200).json(success(200, userList));
   } catch (error) {
-    res.json(failed(404, errorMessage));
+    res.status(404).json(failed(404, errorMessage));
   }
 };
 
