@@ -16,8 +16,8 @@ const getContactById = async (id) => {
 };
 
 const removeContact = async (id) => {
-  await Contact.findByIdAndRemove(id);
-  return "contact deleted";
+  const removeUser = await Contact.findByIdAndRemove(id);
+  return removeUser;
 };
 
 const addContact = async (body) => {

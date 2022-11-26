@@ -4,7 +4,7 @@ const { mongoose } = require("./service/index");
 mongoose
   .connect(process.env.URL_DB)
   .then(() => {
-    app.listen(3000, () => {
+    app.listen(process.env.PORT || 3001, () => {
       console.log("Server running. Use our API on port: 3000");
     });
     console.log("Database connection successful");

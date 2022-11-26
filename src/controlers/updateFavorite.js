@@ -1,18 +1,15 @@
-const { success, failed } = require("../../utils/code");
+const { success, failed } = require("../../utils/codeResponse");
 const { updateContact } = require("../../service/model");
 
-const errorMessage = "Not found";
-
 const updateFavorite = async (req, res, next) => {
-  try {
-    const id = await req.params.contactId;
-    const body = await req.body;
-    const updateUser = await updateContact(id, body);
+  const id = await req.params.contactId;
+  const body = await req.body;
 
-    res.status(200).json(success(200, updateUser));
-  } catch (error) {
-    res.status(404).json(failed(404, errorMessage));
-  }
+  const updateUser = await updateContact(id, body);
+
+  if (!updateUser) return res.status(400).json(failed(400, "Not found"));
+
+  res.status(200).json(success(200, updateUser));
 };
 
 module.exports = { updateFavorite };

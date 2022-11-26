@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { handleError } = require("../../errors/hendleErrorShema");
+
 const Shema = mongoose.Schema;
 
 const contactsShema = new Shema(
@@ -9,6 +11,7 @@ const contactsShema = new Shema(
     },
     email: {
       type: String,
+      unique: false,
     },
     phone: {
       type: String,
@@ -17,17 +20,13 @@ const contactsShema = new Shema(
       type: Boolean,
       default: false,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false }
 );
-
-const handleError = (error, data, next) => {
-  const { code } = error;
-  if (code) {
-    error.status(400);
-  }
-  next();
-};
 contactsShema.post("save", handleError);
 
 module.exports = { contactsShema };

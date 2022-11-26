@@ -1,17 +1,15 @@
-const { success, failed } = require("../../utils/code");
+const { success, failed } = require("../../utils/codeResponse");
 const { removeContact } = require("../../service/model");
 
-const errorMessage = "Not found";
-
 const deleteContacts = async (req, res) => {
-  try {
-    const id = req.params.contactId;
-    const removeUser = await removeContact(id);
+  const id = req.params.contactId;
+  const removeUser = await removeContact(id);
 
-    res.status(200).json(success(200, removeUser));
-  } catch (error) {
-    res.status(404).json(failed(404, errorMessage));
+  if (!removeUser) {
+    res.status(400).json(failed(400, "User not found, enter correct id"));
   }
+
+  res.status(200).json(success(200, "contact deleted"));
 };
 
 module.exports = { deleteContacts };

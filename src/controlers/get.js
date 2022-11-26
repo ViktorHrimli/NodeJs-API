@@ -1,16 +1,11 @@
-const { success, failed } = require("../../utils/code");
+const { success, failed } = require("../../utils/codeResponse");
 const { listContacts } = require("../../service/model");
 
-const errorMessage = "Not found";
 const getContacts = async (req, res) => {
-  try {
-    const userList = await listContacts();
-    if (!userList) return res.json(failed(400, errorMessage));
+  const userList = await listContacts();
+  if (!userList) return res.json.status(400).json(failed(400, "Not found"));
 
-    res.status(200).json(success(200, userList));
-  } catch (error) {
-    res.status(404).json(failed(404, errorMessage));
-  }
+  res.status(200).json(success(200, userList));
 };
 
 module.exports = { getContacts };

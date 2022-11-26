@@ -6,8 +6,7 @@ const failed = (code, message) => {
   return {
     status: "failed",
     code,
-    message: `Field ${message}`,
-    data: "Not found",
+    message,
   };
 };
 

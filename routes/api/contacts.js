@@ -8,19 +8,16 @@ const { deleteContacts } = require("../../src/controlers/deleteContact");
 const { updateContacts } = require("../../src/controlers/udateContact");
 const { updateFavorite } = require("../../src/controlers/updateFavorite");
 
-const {
-  postVaidation,
-  putVaidation,
-  patchVaidation,
-} = require("../../src/middlewear/validation");
+const { wrapper } = require("../../src/middlewear/wrapperValidation");
+const { asyncWrapper } = require("../../src/middlewear/asyncWrapper");
 
 const router = express.Router();
 
-router.get("/", getContacts);
-router.get("/:contactId", isValidId, getContactsId);
-router.post("/", postVaidation, postContacts);
-router.delete("/:contactId", isValidId, deleteContacts);
-router.put("/:contactId", isValidId, putVaidation, updateContacts);
-router.patch("/:contactId/favorite", isValidId, patchVaidation, updateFavorite);
+router.get("/", asyncWrapper(getContacts));
+router.get("/:contactId", isValidId, asyncWrapper(getContactsId));
+router.post("/", wrapper(postContacts));
+router.delete("/:contactId", isValidId, asyncWrapper(deleteContacts));
+router.put("/:contactId", isValidId, wrapper(updateContacts));
+router.patch("/:contactId/favorite", isValidId, wrapper(updateFavorite));
 
 module.exports = router;
