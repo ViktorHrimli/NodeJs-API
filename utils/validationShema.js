@@ -1,23 +1,41 @@
-const Joi = require("joi");
+const { shemaBody } = require("../service/shemas/requestShema");
 
-const validationShema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string()
-    .email({
-      minDomainSegments: 3,
-      tlds: { allow: ["com", "net", "org"] },
-    })
-    .required(),
-  phone: Joi.string().min(8).max(14).required(),
-});
+const isValidPost = async (body) => {
+  const { error } = shemaBody.postShema.validate({
+    name: body.name,
+    email: body.email,
+    phone: body.phone,
+  });
+  if (error) return error;
+  return null;
+};
 
-const validationPutShema = Joi.object({
-  name: Joi.string().min(3).max(30),
-  email: Joi.string().email({
-    minDomainSegments: 2,
-    tlds: { allow: ["com", "net"] },
-  }),
-  phone: Joi.string().min(8).max(14),
-});
+// const isValidPut = async (body) => {
+//   if (!body.name && !body.email && !body.phone) {
+//     return null;
+//   }
+//   const { error } = shemaBody.putShema.validate({
+//     name: body.name,
+//     email: body.email,
+//     phone: body.phone,
+//   });
 
-module.exports = { validationShema, validationPutShema };
+//   if (!error) return true;
+//   return null;
+// };
+
+// const isValidPatch = async (body) => {
+//   let isValid = true;
+//   const { error } = shemaBody.patchShema.validate({
+//     favorite: body.favorite,
+//   });
+
+//   isValid = error ? null : true;
+//   return isValid;
+// };
+
+module.exports = {
+  isValidPost,
+  // isValidPatch,
+  // isValidPut,
+};
