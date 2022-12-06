@@ -1,5 +1,5 @@
-const { mongoose } = require("./index");
-const { contactsShema } = require("./shemas/contacts");
+const mongoose = require("../db/index");
+const contactsShema = require("../db/contacts/model");
 
 const Contact = mongoose.model("contact", contactsShema);
 
@@ -30,10 +30,12 @@ const updateContact = async (id, body) => {
   return udateUser;
 };
 
-module.exports = {
+const services = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
 };
+
+module.exports = services;

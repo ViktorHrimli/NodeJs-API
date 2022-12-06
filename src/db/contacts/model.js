@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { handleError } = require("../../errors/hendleErrorShema");
+const { handleError } = require("../../helpers/hendleErrorShema");
 
 const Shema = mongoose.Schema;
 
@@ -11,7 +11,8 @@ const contactsShema = new Shema(
     },
     email: {
       type: String,
-      unique: false,
+      required: [true, "Set email for contact"],
+      unique: true,
     },
     phone: {
       type: String,
@@ -29,4 +30,4 @@ const contactsShema = new Shema(
 );
 contactsShema.post("save", handleError);
 
-module.exports = { contactsShema };
+module.exports = contactsShema;

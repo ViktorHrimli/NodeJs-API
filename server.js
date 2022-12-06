@@ -1,5 +1,5 @@
 const app = require("./app");
-const { mongoose } = require("./service/index");
+const mongoose = require("./src/db/index");
 
 mongoose
   .connect(process.env.URL_DB)
