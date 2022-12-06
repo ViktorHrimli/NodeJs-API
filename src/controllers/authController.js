@@ -2,11 +2,6 @@ const { success } = require("../utils/codeResponse");
 const { WrongParametrError } = require("../helpers/ApiHandleError");
 const { loginUser, signInUser } = require("../services/authServices");
 
-// const addContact = async (body) => {
-//   const newUser = await Contact.create(body);
-//   return newUser;
-// };
-
 const authSignUp = async (req, res) => {
   const body = req.body;
   const newUser = await signInUser(body);

@@ -10,20 +10,20 @@ const {
   updateFavorite,
 } = require("../controllers/contactsContorller");
 
-const { wrapper } = require("../middlewars/wrapperValidation");
+const { contactsWrap } = require("../middlewars/wrapperValidation");
 
 const router = express.Router();
 
-router.get("/", wrapper(getContacts));
+router.get("/", contactsWrap(getContacts));
 
-router.get("/:contactId", isValidId, wrapper(getContactsId));
+router.get("/:contactId", isValidId, contactsWrap(getContactsId));
 
-router.post("/", wrapper(postContacts));
+router.post("/", contactsWrap(postContacts));
 
-router.delete("/:contactId", isValidId, wrapper(deleteContacts));
+router.delete("/:contactId", isValidId, contactsWrap(deleteContacts));
 
-router.put("/:contactId", isValidId, wrapper(updateContacts));
+router.put("/:contactId", isValidId, contactsWrap(updateContacts));
 
-router.patch("/:contactId/favorite", isValidId, wrapper(updateFavorite));
+router.patch("/:contactId/favorite", isValidId, contactsWrap(updateFavorite));
 
 module.exports = router;

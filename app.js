@@ -5,7 +5,10 @@ require("dotenv").config();
 const contactsRouter = require("./src/routes/contactsRoutes");
 const authRouter = require("./src/routes/authRoutes");
 
-const { errorHanler } = require("./src/middlewars/asyncWrapper");
+const {
+  internalServerError,
+  notFoundError,
+} = require("./src/middlewars/errorWrapper");
 
 const app = express();
 
@@ -15,13 +18,12 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
+// router
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", authRouter);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Not found" });
-});
-
-app.use(errorHanler);
+// error
+app.use(notFoundError);
+app.use(internalServerError);
 
 module.exports = app;

@@ -1,5 +1,5 @@
 const mongoose = require("../db/index");
-const contactsShema = require("../db/contacts/model");
+const contactsShema = require("../db/contacts/shema");
 
 const Contact = mongoose.model("contact", contactsShema);
 

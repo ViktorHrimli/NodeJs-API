@@ -1,7 +1,8 @@
-const shemaBody = require("../helpers/validation");
+const shemaBody = require("../helpers/validationContacts");
+const userShema = require("../helpers/validationUser");
 const { failed } = require("../utils/codeResponse");
 
-const wrapper = (controller) => {
+const contactsWrap = (controller) => {
   return async (req, res, next) => {
     switch (req.method) {
       case "POST": {
@@ -16,7 +17,6 @@ const wrapper = (controller) => {
       }
       case "PUT": {
         if (!req.body.name && !req.body.email && !req.body.phone) {
-          console.log("wtf");
           return next(
             res
               .status(400)
@@ -43,4 +43,21 @@ const wrapper = (controller) => {
   };
 };
 
-module.exports = { wrapper };
+const authWrapp = (controller) => {
+  return async (req, res, next) => {
+    switch (req.method) {
+      case "POST": {
+        const { error } = userShema.postUserShema.validate(req.body);
+
+        return !error
+          ? controller(req, res)
+          : next(res.status(400).json(failed(400, error.message)));
+      }
+      default: {
+        return controller(res, req, next).catch(next);
+      }
+    }
+  };
+};
+
+module.exports = { contactsWrap, authWrapp };
