@@ -1,3 +1,4 @@
+const { hash } = require("bcrypt");
 const mongoose = require("mongoose");
 
 const Shema = mongoose.Schema;
@@ -26,6 +27,12 @@ const userShema = new Shema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: "user",
   },
+});
+
+userShema.pre("save", async function () {
+  if (this.isNew) {
+    this.password = await hash(this.password, 10);
+  }
 });
 
 module.exports = userShema;

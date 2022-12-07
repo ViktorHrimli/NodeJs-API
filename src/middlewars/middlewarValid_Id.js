@@ -1,15 +1,12 @@
 const { isValidObjectId } = require("mongoose");
+const { ValidationError } = require("../helpers/ApiHandleError");
 
 const isValidId = (req, res, next) => {
   const id = req.params.contactId;
 
   if (!isValidObjectId(id)) {
-    return res.status(400).json({
-      message: "Is not valid id, please enter correct id",
-      code: 400,
-    });
+    throw new ValidationError("Is not valid id, please enter correct id");
   }
-
   next();
 };
 

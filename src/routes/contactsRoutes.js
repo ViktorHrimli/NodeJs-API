@@ -1,5 +1,6 @@
 const express = require("express");
-const isValidId = require("../middlewars/isValid_Id");
+const isValidId = require("../middlewars/middlewarValid_Id");
+const authMiddlewar = require("../middlewars/middlewarAuthToken");
 
 const {
   deleteContacts,
@@ -10,9 +11,11 @@ const {
   updateFavorite,
 } = require("../controllers/contactsContorller");
 
-const { contactsWrap } = require("../middlewars/wrapperValidation");
+const { contactsWrap } = require("../middlewars/middlewarValidation");
 
 const router = express.Router();
+
+router.use(authMiddlewar);
 
 router.get("/", contactsWrap(getContacts));
 

@@ -6,7 +6,7 @@ const failed = (code, message) => {
   return {
     status: "failed",
     code,
-    message,
+    ResponseBody: message,
   };
 };
 

@@ -5,10 +5,7 @@ require("dotenv").config();
 const contactsRouter = require("./src/routes/contactsRoutes");
 const authRouter = require("./src/routes/authRoutes");
 
-const {
-  internalServerError,
-  notFoundError,
-} = require("./src/middlewars/errorWrapper");
+const { errorhandler } = require("./src/middlewars/middlewarError");
 
 const app = express();
 
@@ -23,7 +20,6 @@ app.use("/api/contacts", contactsRouter);
 app.use("/api/users", authRouter);
 
 // error
-app.use(notFoundError);
-app.use(internalServerError);
+app.use(errorhandler);
 
 module.exports = app;

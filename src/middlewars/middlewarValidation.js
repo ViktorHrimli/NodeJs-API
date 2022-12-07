@@ -50,7 +50,7 @@ const authWrapp = (controller) => {
         const { error } = userShema.postUserShema.validate(req.body);
 
         return !error
-          ? controller(req, res)
+          ? controller(req, res).catch(next)
           : next(res.status(400).json(failed(400, error.message)));
       }
       default: {

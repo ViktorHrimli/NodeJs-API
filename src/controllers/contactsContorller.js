@@ -3,6 +3,8 @@ const { WrongParametrError } = require("../helpers/ApiHandleError");
 const services = require("../services/contactsServices");
 
 const getContacts = async (req, res) => {
+  const { id } = req.user;
+  console.log(id);
   const userList = await services.listContacts();
   if (!userList) {
     throw new WrongParametrError(`Not found user list`);

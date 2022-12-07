@@ -1,27 +1,28 @@
 const { success } = require("../utils/codeResponse");
-const { WrongParametrError } = require("../helpers/ApiHandleError");
-const { loginUser, signInUser } = require("../services/authServices");
+const {
+  loginUser,
+  signInUser,
+  logOutUser,
+} = require("../services/authServices");
 
 const authSignUp = async (req, res) => {
-  const body = req.body;
-  const newUser = await signInUser(body);
-
-  if (!newUser) {
-    throw new WrongParametrError(`Not create new user`);
-  }
+  const newUser = await signInUser(req.body);
 
   res.status(201).json(success(201, newUser));
 };
 
 const authLogin = async (req, res) => {
-  const body = req.body;
-  const newUser = await loginUser(body);
+  const newUser = await loginUser(req.body);
 
-  if (!newUser) {
-    throw new WrongParametrError(`Not create new user`);
-  }
-
-  //   res.status(201).json(success(201, newUser));
+  res.status(201).json(success(201, newUser));
 };
 
-module.exports = { authSignUp, authLogin };
+const authLogOut = async (req, res) => {
+  const { id } = req.user;
+  await logOutUser(id);
+  console.log(req.token);
+  req.token = null;
+  res.status(204).json(success(204, "No Content"));
+};
+
+module.exports = { authSignUp, authLogin, authLogOut };
