@@ -53,6 +53,13 @@ const authWrapp = (controller) => {
           ? controller(req, res).catch(next)
           : next(res.status(400).json(failed(400, error.message)));
       }
+      case "PATCH": {
+        const { error } = userShema.patchUserShema.validate(req.body);
+
+        return !error
+          ? controller(req, res).catch(next)
+          : next(res.status(400).json(failed(400, error.message)));
+      }
       default: {
         return controller(res, req, next).catch(next);
       }

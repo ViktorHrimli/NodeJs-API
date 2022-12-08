@@ -3,9 +3,12 @@ const { WrongParametrError } = require("../helpers/ApiHandleError");
 const services = require("../services/contactsServices");
 
 const getContacts = async (req, res) => {
-  const { id } = req.user;
-  console.log(id);
-  const userList = await services.listContacts();
+  const { id } = await req.user;
+  const { page, limit } = await req.query;
+  console.log(page);
+  console.log(req.user);
+  const userList = await services.listContacts(id, limit);
+
   if (!userList) {
     throw new WrongParametrError(`Not found user list`);
   }
@@ -14,19 +17,25 @@ const getContacts = async (req, res) => {
 };
 
 const getContactsId = async (req, res) => {
-  const id = req.params.contactId;
-  const userId = await services.getContactById(id);
+  const contactsId = req.params.contactId;
+  const { id } = req.user;
 
-  if (!userId) {
-    throw new WrongParametrError(`Not found user id:${id}`);
+  const user = await services.getContactById(contactsId, id);
+
+  if (!user) {
+    throw new WrongParametrError(`Not found user id:${contactsId}`);
   }
 
-  res.status(200).json(success(200, userId));
+  res.status(200).json(success(200, user));
 };
 
 const postContacts = async (req, res) => {
-  const body = req.body;
-  const newUser = await services.addContact(body);
+  const { id } = req.user;
+
+  const newUser = await services.addContact({
+    ...req.body,
+    owner: id,
+  });
 
   if (!newUser) {
     throw new WrongParametrError(`Not create new user`);
@@ -48,8 +57,7 @@ const deleteContacts = async (req, res) => {
 
 const updateContacts = async (req, res, next) => {
   const id = req.params.contactId;
-  const body = req.body;
-  const updateUser = await services.updateContact(id, body);
+  const updateUser = await services.updateContact(id, req.body);
 
   if (!updateUser) {
     throw new WrongParametrError(`Not found user id: ${id}`);
@@ -60,9 +68,8 @@ const updateContacts = async (req, res, next) => {
 
 const updateFavorite = async (req, res, next) => {
   const id = await req.params.contactId;
-  const body = await req.body;
 
-  const updateUser = await services.updateContact(id, body);
+  const updateUser = await services.updateContact(id, req.body);
 
   if (!updateUser) {
     throw new WrongParametrError(`Not found user id: ${id}`);

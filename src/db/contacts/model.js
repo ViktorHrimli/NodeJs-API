@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { handleError } = require("../../helpers/hendleErrorShema");
 
 const Shema = mongoose.Schema;
 
@@ -17,6 +16,10 @@ const contactsShema = new Shema(
     phone: {
       type: String,
     },
+    owner: {
+      type: String,
+      ref: "user",
+    },
     favorite: {
       type: Boolean,
       default: false,
@@ -28,6 +31,5 @@ const contactsShema = new Shema(
   },
   { versionKey: false }
 );
-contactsShema.post("save", handleError);
 
 module.exports = contactsShema;

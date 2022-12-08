@@ -6,8 +6,7 @@ const {
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const userShema = require("../db/user/shema");
-
+const userShema = require("../db/user/model");
 const User = mongoose.model("user", userShema);
 
 const signInUser = async (body) => {
@@ -20,17 +19,15 @@ const signInUser = async (body) => {
 
   const newUser = await User.create(body);
 
-  const data = {
+  return {
     email: newUser.email,
     subscription: newUser.subscription,
   };
-  return data;
 };
 
 const loginUser = async (body) => {
   const { email, password } = body;
   const isLogin = await User.findOne({ email });
-
   if (!isLogin) {
     throw new AutoraizedError(`Not found user with email:'${email}'!`);
   }
@@ -48,19 +45,38 @@ const loginUser = async (body) => {
     process.env.SECRET_WORD
   );
 
-  const isSuccessLogin = {
+  return {
     token,
     user: {
       email: isLogin.email,
       subscription: isLogin.subscription,
     },
   };
+};
 
-  return isSuccessLogin;
+const updateUserSubscribe = async (id, body) => {
+  const newUser = await User.findByIdAndUpdate(id, body, { new: true });
+  return newUser;
 };
 
 const logOutUser = async (id) => {
   return await User.findOne({ id });
 };
 
-module.exports = { signInUser, loginUser, User, logOutUser };
+const currentUser = async (newToken, { _id, email, subscription }) => {
+  return {
+    _id,
+    email,
+    subscription,
+    token: newToken,
+  };
+};
+
+module.exports = {
+  signInUser,
+  loginUser,
+  User,
+  logOutUser,
+  currentUser,
+  updateUserSubscribe,
+};

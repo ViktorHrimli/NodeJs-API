@@ -11,9 +11,7 @@ const authMiddlewar = async (req, res, next) => {
 
   try {
     const { id } = jwt.decode(token, process.env.SECRET_WORD);
-
-    const user = await User.findOne({ id });
-
+    const user = await User.findOne({ _id: id });
     if (!user) {
       return next(new AutoraizedError("Not authorized"));
     }

@@ -1,17 +1,17 @@
 const mongoose = require("../db/index");
-const contactsShema = require("../db/contacts/shema");
+const contactsShema = require("../db/contacts/model");
 
 const Contact = mongoose.model("contact", contactsShema);
-
-const getUserList = async () => await Contact.find({}, "-createdAt -updatedAt");
-
-const listContacts = async () => {
-  const list = await getUserList();
-  return list;
+const options = {
+  createdAt: 0,
 };
 
-const getContactById = async (id) => {
-  const user = await Contact.findById(id, "-createdAt -updatedAt");
+const listContacts = async (owner, limit) => {
+  return await Contact.find({ owner }, options).limit(limit);
+};
+
+const getContactById = async (id, userId) => {
+  const user = await Contact.findById(id, options);
   return user;
 };
 
@@ -21,12 +21,15 @@ const removeContact = async (id) => {
 };
 
 const addContact = async (body) => {
-  const newUser = await Contact.create(body);
+  const newUser = await Contact.create(body, options);
   return newUser;
 };
 
 const updateContact = async (id, body) => {
-  const udateUser = await Contact.findByIdAndUpdate(id, body, { new: true });
+  const udateUser = await Contact.findByIdAndUpdate(id, body, [
+    { email: 1, subscription: 1 },
+    { new: true },
+  ]);
   return udateUser;
 };
 

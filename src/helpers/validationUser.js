@@ -11,8 +11,13 @@ const postUserShema = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business"),
 });
 
+const patchUserShema = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business").required(),
+});
+
 const userShema = {
   postUserShema,
+  patchUserShema,
 };
 
 module.exports = userShema;
