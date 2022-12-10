@@ -5,7 +5,9 @@ const isValidId = (req, res, next) => {
   const id = req.params.contactId;
 
   if (!isValidObjectId(id)) {
-    throw new ValidationError("Is not valid id, please enter correct id");
+    return next(
+      new ValidationError("Is not valid id, please enter correct id")
+    );
   }
   next();
 };

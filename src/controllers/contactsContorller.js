@@ -1,55 +1,63 @@
 const { success } = require("../utils/codeResponse");
-const { WrongParametrError } = require("../helpers/ApiHandleError");
 const services = require("../services/contactsServices");
 
-const getContacts = async (req, res) => {
-  const { id } = await req.user;
-  const { page, limit } = await req.query;
-  console.log(page);
-  console.log(req.user);
-  const userList = await services.listContacts(id, limit);
+const getContacts = async (req, res, next) => {
+  const { _id: owner } = await req.user;
+  const { page, limit, favorite } = await req.query;
+
+  const userList = await services.listContacts(
+    owner,
+    Number(page),
+    Number(limit),
+    favorite
+  );
 
   if (!userList) {
-    throw new WrongParametrError(`Not found user list`);
+    return res.status(400).json({ message: `Not found user contacts (:` });
   }
 
   res.status(200).json(success(200, userList));
 };
 
-const getContactsId = async (req, res) => {
-  const contactsId = req.params.contactId;
-  const { id } = req.user;
+const getContactsId = async (req, res, next) => {
+  const id = req.params.contactId;
+  const { _id: owner } = req.user;
 
-  const user = await services.getContactById(contactsId, id);
+  const user = await services.getContactById(id, owner);
 
   if (!user) {
-    throw new WrongParametrError(`Not found user id:${contactsId}`);
+    return res.status(400).json({ message: `Not found user id: '${id}'` });
   }
 
   res.status(200).json(success(200, user));
 };
 
-const postContacts = async (req, res) => {
-  const { id } = req.user;
+const postContacts = async (req, res, next) => {
+  const { _id: owner } = req.user;
+  const { name, email, phone } = req.body;
 
   const newUser = await services.addContact({
-    ...req.body,
-    owner: id,
+    name,
+    email,
+    phone,
+    owner,
   });
 
   if (!newUser) {
-    throw new WrongParametrError(`Not create new user`);
+    return res.status(400).json({ message: `Not create user` });
   }
 
   res.status(201).json(success(201, newUser));
 };
 
-const deleteContacts = async (req, res) => {
+const deleteContacts = async (req, res, next) => {
   const id = req.params.contactId;
-  const removeUser = await services.removeContact(id);
+  const { _id: owner } = req.user;
+
+  const removeUser = await services.removeContact(id, owner);
 
   if (!removeUser) {
-    throw new WrongParametrError(`Not found user id: ${id}`);
+    return res.status(400).json({ message: `Not found user id: '${id}'` });
   }
 
   res.status(200).json(success(200, "contact deleted"));
@@ -57,22 +65,25 @@ const deleteContacts = async (req, res) => {
 
 const updateContacts = async (req, res, next) => {
   const id = req.params.contactId;
-  const updateUser = await services.updateContact(id, req.body);
+  const { _id: owner } = req.user;
+
+  const updateUser = await services.updateContact(id, owner, req.body);
 
   if (!updateUser) {
-    throw new WrongParametrError(`Not found user id: ${id}`);
+    return res.status(400).json({ message: `Not found user id: '${id}'` });
   }
 
   res.status(200).json(success(200, updateUser));
 };
 
 const updateFavorite = async (req, res, next) => {
-  const id = await req.params.contactId;
+  const id = req.params.contactId;
+  const { _id: owner } = req.user;
 
-  const updateUser = await services.updateContact(id, req.body);
+  const updateUser = await services.updateContact(id, owner, req.body);
 
   if (!updateUser) {
-    throw new WrongParametrError(`Not found user id: ${id}`);
+    return res.status(400).json({ message: `Not found user id: ${id}` });
   }
 
   res.status(200).json(success(200, updateUser));

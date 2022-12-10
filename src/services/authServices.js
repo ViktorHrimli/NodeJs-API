@@ -9,15 +9,15 @@ const bcrypt = require("bcrypt");
 const userShema = require("../db/user/model");
 const User = mongoose.model("user", userShema);
 
-const signInUser = async (body) => {
+const signInUser = async (body, next) => {
   const { email } = body;
   const findIsUser = await User.findOne({ email });
 
   if (findIsUser) {
-    throw new ConflicktError("Email in use");
+    return next(new ConflicktError("Email in use"));
   }
 
-  const newUser = await User.create(body);
+  const newUser = await User.create(body, { runValidators: true });
 
   return {
     email: newUser.email,
@@ -55,7 +55,13 @@ const loginUser = async (body) => {
 };
 
 const updateUserSubscribe = async (id, body) => {
-  const newUser = await User.findByIdAndUpdate(id, body, { new: true });
+  const newUser = await User.findByIdAndUpdate(id, body, {
+    new: true,
+    runValidators: true,
+  }).select({
+    email: 1,
+    subscription: 1,
+  });
   return newUser;
 };
 

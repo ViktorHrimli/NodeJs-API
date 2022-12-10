@@ -15,12 +15,11 @@ const authMiddlewar = async (req, res, next) => {
     if (!user) {
       return next(new AutoraizedError("Not authorized"));
     }
-
     req.token = token;
     req.user = user;
     next();
   } catch (error) {
-    throw new AutoraizedError("Invailed token");
+    return next(new AutoraizedError("Invailed token"));
   }
 };
 

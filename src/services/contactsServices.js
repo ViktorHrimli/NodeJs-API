@@ -6,31 +6,33 @@ const options = {
   createdAt: 0,
 };
 
-const listContacts = async (owner, limit) => {
-  return await Contact.find({ owner }, options).limit(limit);
+const listContacts = async (owner, page = 0, limit = 20, favorite = false) => {
+  let count = 0;
+  const skip = page > 0 ? (count += limit) : page;
+
+  return await Contact.find({ owner }).skip(skip).limit(limit).select(options);
 };
 
-const getContactById = async (id, userId) => {
-  const user = await Contact.findById(id, options);
-  return user;
+const getContactById = async (id, owner) => {
+  return await Contact.findById(
+    {
+      _id: id,
+      owner,
+    },
+    { runValidators: true }
+  );
 };
 
-const removeContact = async (id) => {
-  const removeUser = await Contact.findByIdAndRemove(id);
-  return removeUser;
+const removeContact = async (id, owner) => {
+  return await Contact.findOneAndDelete({ _id: id, owner });
 };
 
 const addContact = async (body) => {
-  const newUser = await Contact.create(body, options);
-  return newUser;
+  return await Contact.create(body);
 };
 
-const updateContact = async (id, body) => {
-  const udateUser = await Contact.findByIdAndUpdate(id, body, [
-    { email: 1, subscription: 1 },
-    { new: true },
-  ]);
-  return udateUser;
+const updateContact = async (id, owner, body) => {
+  return await Contact.findOneAndUpdate({ _id: id, owner }, body);
 };
 
 const services = {

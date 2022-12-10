@@ -17,7 +17,7 @@ const contactsShema = new Shema(
       type: String,
     },
     owner: {
-      type: String,
+      type: mongoose.SchemaTypes.ObjectId,
       ref: "user",
     },
     favorite: {
