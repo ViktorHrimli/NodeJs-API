@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ConflicktError } = require("../../helpers/ApiHandleError");
 
 const Shema = mongoose.Schema;
 
@@ -32,4 +33,11 @@ const contactsShema = new Shema(
   { versionKey: false }
 );
 
+// FIXME crashed app, this error not captured
+contactsShema.post("save", async function (err, data, next) {
+  if (err.name === "MongoServerError" && err.code === 11000) {
+    return next(new ConflicktError(err.message));
+  }
+  next();
+});
 module.exports = contactsShema;

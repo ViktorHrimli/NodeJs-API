@@ -44,7 +44,7 @@ const postContacts = async (req, res, next) => {
   });
 
   if (!newUser) {
-    return res.status(400).json({ message: `Not create user` });
+    return res.status(400).json({ message: `Email in use` });
   }
 
   res.status(201).json(success(201, newUser));
