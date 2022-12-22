@@ -1,6 +1,5 @@
 const { hash } = require("bcrypt");
 const mongoose = require("mongoose");
-
 const Shema = mongoose.Schema;
 
 const userShema = new Shema(
@@ -22,6 +21,9 @@ const userShema = new Shema(
     token: {
       type: String,
       default: null,
+    },
+    avatarUrl: {
+      type: String,
     },
   },
   { versionKey: false }

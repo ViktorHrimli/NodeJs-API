@@ -1,3 +1,5 @@
+const gravatar = require("gravatar");
+
 const { success } = require("../utils/codeResponse");
 const {
   loginUser,
@@ -8,7 +10,11 @@ const {
 } = require("../services/authServices");
 
 const authSignUp = async (req, res, next) => {
-  const newUser = await signInUser(req.body, next);
+  const avatarUrl = gravatar.url(req.body.email, {
+    s: "250",
+    protocol: "http",
+  });
+  const newUser = await signInUser({ ...req.body, avatarUrl }, res);
 
   res.status(201).json(success(201, newUser));
 };

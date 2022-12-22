@@ -1,27 +1,25 @@
 const mongoose = require("../db/index");
-const {
-  AutoraizedError,
-  ConflicktError,
-} = require("../helpers/ApiHandleError");
+const { AutoraizedError } = require("../helpers/ApiHandleError");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const userShema = require("../db/user/model");
 const User = mongoose.model("user", userShema);
 
-const signInUser = async (body, next) => {
+const signInUser = async (body, res) => {
   const { email } = body;
   const findIsUser = await User.findOne({ email });
 
   if (findIsUser) {
-    return next(new ConflicktError("Email in use"));
+    res.status(409).json({ message: "Email in use" });
   }
 
-  const newUser = await User.create(body, { runValidators: true });
+  const newUser = await User.create(body);
 
   return {
     email: newUser.email,
     subscription: newUser.subscription,
+    avatarUrl: newUser.avatarUrl,
   };
 };
 

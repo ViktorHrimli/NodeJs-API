@@ -9,6 +9,7 @@ const postUserShema = Joi.object({
     .required(),
   password: Joi.string().min(8).max(14).required(),
   subscription: Joi.string().valid("starter", "pro", "business"),
+  avatarUrl: Joi.string(),
 });
 
 const patchUserShema = Joi.object({
