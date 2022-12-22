@@ -1,7 +1,8 @@
 const { success } = require("../utils/codeResponse");
 
 const postAvatars = async (req, res, next) => {
-  res.status(201).json(success(201, "success"));
+  console.log(req.body);
+  res.status(200).json(success("Файл успешно загружен"));
 };
 
 module.exports = {
