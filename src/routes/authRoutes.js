@@ -15,6 +15,8 @@ const authMiddlewar = require("../middlewars/middlewarAuthToken");
 
 router.patch("/", authMiddlewar, authWrapp(authUpdate));
 
+router.patch("/avatars", authMiddlewar);
+
 router.post("/signup", authWrapp(authSignUp));
 
 router.post("/login", authWrapp(authLogin));

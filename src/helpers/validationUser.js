@@ -13,7 +13,8 @@ const postUserShema = Joi.object({
 });
 
 const patchUserShema = Joi.object({
-  subscription: Joi.string().valid("starter", "pro", "business").required(),
+  subscription: Joi.string().valid("starter", "pro", "business"),
+  avatarUrl: Joi.string(),
 });
 
 const userShema = {
