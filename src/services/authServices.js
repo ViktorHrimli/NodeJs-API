@@ -76,6 +76,12 @@ const currentUser = async (newToken, { _id, email, subscription }) => {
   };
 };
 
+const newAvatarUser = async (user, avatarUrl) => {
+  const updateUser = { ...user, avatarUrl };
+
+  return await User.findOneAndUpdate({ _id: user._id }, updateUser);
+};
+
 module.exports = {
   signInUser,
   loginUser,
@@ -83,4 +89,5 @@ module.exports = {
   logOutUser,
   currentUser,
   updateUserSubscribe,
+  newAvatarUser,
 };

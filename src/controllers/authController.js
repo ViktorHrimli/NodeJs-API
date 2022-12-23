@@ -1,8 +1,10 @@
 const gravatar = require("gravatar");
 const fs = require("fs/promises");
-const Jimp = require("jimp");
 const path = require("path");
-const avatarsPath = path.resolve("./public/avatars");
+const tmpPath = path.resolve("./tmp");
+const uploadDir = path.resolve("./public/avatars");
+
+const resize = require("../utils/resizeImg");
 
 const { success } = require("../utils/codeResponse");
 const {
@@ -11,6 +13,7 @@ const {
   logOutUser,
   currentUser,
   updateUserSubscribe,
+  newAvatarUser,
 } = require("../services/authServices");
 
 const authSignUp = async (req, res, next) => {
@@ -53,18 +56,17 @@ const authUpdate = async (req, res, next) => {
 
 const authAvatarUpdate = async (req, res, next) => {
   const { filename } = req.file;
-  const img = await resize(filename);
-  await fs.appendFile(avatarsPath, img.toString());
-  res
-    .status(200)
-    .json({ message: "Succssesfull", avatarUrl: req.file.fileName });
+
+  const tmpFile = `${tmpPath}\\${filename}`;
+  const avatarsFile = `${uploadDir}\\${filename}`;
+
+  resize(filename);
+
+  await fs.unlink(tmpFile);
+  await newAvatarUser(req.user._doc, avatarsFile);
+
+  res.status(200).json({ message: "Succssesfull", avatarUrl: filename });
 };
-
-async function resize(filename) {
-  const image = await (await Jimp.read(`tmp/${filename}`)).resize(250, 250);
-
-  return await image.writeAsync(`test/${Date.now()}_250x250.jpg`);
-}
 
 module.exports = {
   authSignUp,
