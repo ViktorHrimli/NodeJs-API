@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../storage/storage");
 
 const router = express.Router();
 const {
@@ -7,19 +8,25 @@ const {
   authLogOut,
   authCurrentUser,
   authUpdate,
+  authAvatarUpdate,
 } = require("../controllers/authController");
 
 // middlewares
 const { authWrapp } = require("../middlewars/middlewarValidation");
 const authMiddlewar = require("../middlewars/middlewarAuthToken");
 
-router.patch("/", authMiddlewar, authWrapp(authUpdate));
-
-router.patch("/avatars", authMiddlewar);
-
 router.post("/signup", authWrapp(authSignUp));
 
 router.post("/login", authWrapp(authLogin));
+
+router.patch(
+  "/avatars",
+  authMiddlewar,
+  upload.single("avatar"),
+  authAvatarUpdate
+);
+
+router.patch("/", authMiddlewar, authWrapp(authUpdate));
 
 router.get("/current", authMiddlewar, authCurrentUser);
 
