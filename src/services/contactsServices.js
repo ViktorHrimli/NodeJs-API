@@ -18,13 +18,10 @@ const listContacts = async (owner, page = 1, limit = 20, favorite = 1) => {
 };
 
 const getContactById = async (id, owner) => {
-  return await Contact.findOne(
-    {
-      _id: id,
-      owner,
-    },
-    { runValidators: true }
-  );
+  return await Contact.findOne({
+    _id: id,
+    owner,
+  });
 };
 
 const removeContact = async (id, owner) => {

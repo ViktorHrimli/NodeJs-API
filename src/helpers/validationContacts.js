@@ -8,7 +8,7 @@ const postShema = Joi.object({
       tlds: { allow: ["com", "net", "org"] },
     })
     .required(),
-  phone: Joi.string().min(8).max(14).required(),
+  phone: Joi.string().min(13).required(),
   favorite: Joi.boolean(),
 });
 

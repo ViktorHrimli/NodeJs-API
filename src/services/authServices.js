@@ -1,5 +1,5 @@
 const mongoose = require("../db/index");
-const { AutoraizedError } = require("../helpers/ApiHandleError");
+// const { AutoraizedError } = require("../helpers/ApiHandleError");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -23,15 +23,23 @@ const signInUser = async (body, res) => {
   };
 };
 
-const loginUser = async (body) => {
+const loginUser = async (body, res) => {
   const { email, password } = body;
   const isLogin = await User.findOne({ email });
   if (!isLogin) {
-    throw new AutoraizedError(`Not found user with email:'${email}'!`);
+    return res.status(401).json({
+      status: "filed",
+      message: `Not found user with email:'${email}'!`,
+    });
+    // return new AutoraizedError(`Not found user with email:'${email}'!`);
   }
 
   if (!(await bcrypt.compare(password, isLogin.password))) {
-    throw new AutoraizedError(`Wrong email or password!`);
+    return res.status(401).json({
+      status: "filed",
+      message: `Wrong email or password!`,
+    });
+    // throw new AutoraizedError(`Wrong email or password!`);
   }
 
   const token = jwt.sign(

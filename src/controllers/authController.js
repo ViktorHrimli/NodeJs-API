@@ -27,7 +27,7 @@ const authSignUp = async (req, res, next) => {
 };
 
 const authLogin = async (req, res, next) => {
-  const newUser = await loginUser(req.body);
+  const newUser = await loginUser(req.body, res);
 
   res.status(200).json(success(200, newUser));
 };
@@ -55,6 +55,13 @@ const authUpdate = async (req, res, next) => {
 };
 
 const authAvatarUpdate = async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({
+      status: "filed",
+      message: "Empty field, please enter image with '.jpeg, .png, .svg' ",
+    });
+  }
+
   const { filename } = req.file;
 
   const tmpFile = `${tmpPath}\\${filename}`;
@@ -65,7 +72,7 @@ const authAvatarUpdate = async (req, res, next) => {
   await fs.unlink(tmpFile);
   await newAvatarUser(req.user._doc, avatarsFile);
 
-  res.status(200).json({ message: "Succssesfull", avatarUrl: filename });
+  res.status(200).json({ message: "Ok", avatarUrl: filename });
 };
 
 module.exports = {
