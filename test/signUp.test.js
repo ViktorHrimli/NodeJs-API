@@ -1,76 +1,60 @@
+const app = require("../app");
 const { authSignUp } = require("../src/controllers/authController");
+const { User } = require("../src/services/authServices");
+const mongoose = require("../src/db/index");
 
-const User = require("../src/db/user/model");
-const jwt = require("jsonwebtoken");
-// context('when user with such email does not exist', () => {
-// 			let newUser;
-
-// 			before(async () => {});
-
-// 			after(async () => {
-// 				await userModel.findOneAndDelete({ email: newUser.body.user.email });
-// 			});
-
-// 			it('should return 201 Created', async () => {
-// 				newUser = await request(server)
-// 					.post('/api/auth/register')
-// 					.set('Content-Type', 'application/json')
-// 					.send({ email: 'new_email@gmail.com', password: 'some_password' })
-// 					.expect(201);
-
-// 				const responseBody = newUser.body;
-// 				const createdUser = responseBody.should.have.property('user').which.is.a.Object();
-
-// 				createdUser.obj.should.have.property('email').which.is.a.String();
-// 				createdUser.obj.should.have.property('subscription').which.is.a.String();
-// 				createdUser.obj.should.have.property('avatarURL').which.is.a.String();
-// 				createdUser.obj.should.not.have.property('password');
-
-// 				const existedUser = await userModel.findOne({ email: responseBody.user.email });
-
-// 				should.exist(existedUser);
-// 			});
-// 		});
-// 	});
-
-describe("Service test post signup user ", () => {
+describe("Service test signup controller", () => {
   let newUser;
+  const req = {
+    body: {
+      email: "test@gmail.com",
+      password: "hash-password",
+      subscription: "starter",
+    },
+  };
 
-  it("should return 201 code", async (done) => {
-    const fakeReq = {
-      body: {
-        email: "test@gmail.com",
-        password: "hash-password",
-        subscription: "starter",
-      },
-    };
-    const fakeRes = {
-      status: (code) => code,
-      json: { message: "" },
-    };
+  const res = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn((data) => data),
+  };
 
-    const fakeNext = jest.fn();
-    // jest.spyOn(User, "create").mockImplementationOnce(() => {});
-    newUser = await authSignUp(fakeReq, fakeRes, fakeNext);
+  const next = jest.fn();
+  beforeAll(async () => {
+    await mongoose
+      .connect(process.env.URL_DB)
+      .then(() => {
+        app.listen(process.env.PORT || 3001, () => {
+          console.log("Server running. Use our API on port: 3000");
+        });
+        console.log("Database connection successful");
+      })
+      .catch((error) => {
+        console.log(error.message);
+        process.exit(1);
+      });
+  });
 
-    const token = jwt.sign(
-      {
-        id: newUser._id,
-        email: newUser.email,
-        subscription: newUser.subscription,
-      },
-      process.env.SECRET_WORD
-    );
+  afterAll(async () => {
+    await User.findOneAndDelete({ email: "test@gmail.com" });
+  });
 
-    expect(newUser.token).toEqual(token);
+  test("test by token", async () => {
+    newUser = await authSignUp(req, res, next);
+    expect(typeof newUser.token).toBe("string");
 
-    // expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual(token);
+    expect(newUser.user).toEqual({
+      email: "test@gmail.com",
+      subscription: "starter",
+    });
+  });
+  test("test by email and subscribe", async () => {
+    expect(newUser.user).toEqual({
+      email: "test@gmail.com",
+      subscription: "starter",
+    });
+  });
 
-    // expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual({
-    //   email: "test@gmail.com",
-    //   subscription: "starter",
-    // });
-
-    done();
+  test("test by response code 201", async () => {
+    expect(res.status).toHaveBeenCalled();
   });
 });

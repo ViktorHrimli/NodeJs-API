@@ -29,7 +29,6 @@ const signInUser = async (body, res) => {
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
-      avatarUrl: newUser.avatarUrl,
     },
     token,
   };
