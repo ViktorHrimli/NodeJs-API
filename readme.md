@@ -40,59 +40,30 @@ Users services is intended for registration user, login, logout, get current use
 | Token     | String | Update user avatar       | default = null     |
 | \_id      | Obj_id | Unique key MongoDb       | default = MongoDb  |
 
-<!-- Users: api/users
-/: Method: PATCH,
-======================
-/signup: =>
-Discribe: Registration new users
-=>
-Method:POST,
-=>
-Path:api/users/signup,
-=>
-Body: {
-email: string.required,
-password: string.required
-subscription: string, default = starter, [starter, pro, buissnes]
-}
-=>
-Response: {
-email: string,
-subscription: string,
-avatarUrl: string
-}
-==========================
-/login: => Method: POST
-=> api/users/login
-=> Body: {
-email: string.required,
-password: string.required
-} =>
-Response: {
-token: string,
-user: {
-email: string,
-subscription: string
-}
+## Contacts
 
-# }
+Contacts services is intended for get all contacts, get contacts by id, delet, update users contacts.
 
-==========================
-/logout: =>
-Method: all =>
- api/users/logout
-=> body: none
-=>
-Response: succses
-==========================
-/current: => Method: GET
-=> api/users/current
-=> body: none
-=> Response: {
-id: string,
-email: string,
-subscription: string,
-token: string
-}
-/avatars: => Method: PATCH
-=> -->
+#### Path Api Contacts
+
+##### Base path by users "api/contacts"
+
+| Path          | Method | Endpoint                 |
+| ------------- | ------ | ------------------------ |
+| /             | Get    | Get all contacts         |
+| /:id          | Get    | Get contacts by id       |
+| /             | Post   | Create new contacts      |
+| /:id          | Delete | Delete contacts          |
+| /:id          | PATCH  | Update contacts info     |
+| /:id/favorite | PATCH  | Update contacts favorite |
+
+## Items
+
+| Field    | Type    | Discriptions          | Required          |
+| -------- | ------- | --------------------- | ----------------- |
+| Email    | String  | Unique contacts email | true              |
+| Name     | String  | Contacts UserName     | true              |
+| Phone    | String  | +38 XXX XXX XX        | true              |
+| Favorite | Boolean | Favorite Contacts     | default = false   |
+| Owner    | Obj_id  | User id               | default = MongoDb |
+| \_id     | Obj_id  | Unique key MongoDb    | default = MongoDb |
