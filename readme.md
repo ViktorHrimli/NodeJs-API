@@ -29,6 +29,17 @@ Users services is intended for registration user, login, logout, get current use
 | /avatars | PATCH  | Update user avatar       |
 | /        | PATCH  | Update user information  |
 
+## Items
+
+| Field     | Type   | Discriptions             | Required           |
+| --------- | ------ | ------------------------ | ------------------ |
+| Email     | String | Unique user email        | true               |
+| Password  | String | Password user            | true               |
+| Subscribe | String | [starter, business, pro] | default = starter  |
+| Avatar    | URL    | Avatar url               | default = gravatar |
+| Token     | String | Update user avatar       | default = null     |
+| \_id      | Obj_id | Unique key MongoDb       | default = MongoDb  |
+
 <!-- Users: api/users
 /: Method: PATCH,
 ======================
