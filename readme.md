@@ -2,7 +2,15 @@
 
 ### Overview
 
-#### This is services by registrations users and seves yours contacts
+#### This is services by registrations users and saves yours contacts
+
+### Geting Started
+
+#### npm run start:dev => development
+
+#### npm start => production
+
+#### npm run test => start jest test
 
 ## Users
 
@@ -10,51 +18,16 @@ Users services is intended for registration user, login, logout, get current use
 
 #### Path Api Users
 
-<table style="width:30% border:3">
-	<tbody>
-  <th>
-		<tr>
-			<td>api/users/signup</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-	</tbody>
-</table>
+##### Base path by users "api/users"
+
+| Path     | Method | Endpoint                 |
+| -------- | ------ | ------------------------ |
+| /signup  | POST   | Create new User          |
+| /login   | POST   | Enter user and get token |
+| /current | GET    | Get cuurent user         |
+| /logout  | ALL    | Logout cuurent user      |
+| /avatars | PATCH  | Update user avatar       |
+| /        | PATCH  | Update user information  |
 
 <!-- Users: api/users
 /: Method: PATCH,
