@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
 const { authSignUp } = require("../src/controllers/authController");
 
+const User = require("../src/db/user/model");
+const jwt = require("jsonwebtoken");
 // context('when user with such email does not exist', () => {
 // 			let newUser;
 
@@ -32,28 +33,44 @@ const { authSignUp } = require("../src/controllers/authController");
 // 		});
 // 	});
 
-discribe("sign up test ", () => {
-  test("should return ", () => {
+describe("Service test post signup user ", () => {
+  let newUser;
+
+  it("should return 201 code", async (done) => {
     const fakeReq = {
       body: {
         email: "test@gmail.com",
+        password: "hash-password",
         subscription: "starter",
       },
     };
     const fakeRes = {
-      status: 200,
+      status: (code) => code,
       json: { message: "" },
     };
 
     const fakeNext = jest.fn();
+    // jest.spyOn(User, "create").mockImplementationOnce(() => {});
+    newUser = await authSignUp(fakeReq, fakeRes, fakeNext);
 
-    expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual(fakeRes.status);
+    const token = jwt.sign(
+      {
+        id: newUser._id,
+        email: newUser.email,
+        subscription: newUser.subscription,
+      },
+      process.env.SECRET_WORD
+    );
 
-    expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual(token);
+    expect(newUser.token).toEqual(token);
 
-    expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual({
-      email: "test@gmail.com",
-      subscription: "starter",
-    });
+    // expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual(token);
+
+    // expect(authSignUp(fakeReq, fakeRes, fakeNext)).toEqual({
+    //   email: "test@gmail.com",
+    //   subscription: "starter",
+    // });
+
+    done();
   });
 });

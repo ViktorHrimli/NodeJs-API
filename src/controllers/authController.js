@@ -24,6 +24,7 @@ const authSignUp = async (req, res, next) => {
   const newUser = await signInUser({ ...req.body, avatarUrl }, res);
 
   res.status(200).json(success(200, newUser));
+  return newUser;
 };
 
 const authLogin = async (req, res, next) => {

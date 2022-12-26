@@ -14,12 +14,24 @@ const signInUser = async (body, res) => {
     res.status(409).json({ message: "Email in use" });
   }
 
-  const newUser = await User.create(body);
+  const newUser = await User.create({ ...body });
+
+  const token = jwt.sign(
+    {
+      id: newUser._id,
+      email: newUser.email,
+      subscription: newUser.subscription,
+    },
+    process.env.SECRET_WORD
+  );
 
   return {
-    email: newUser.email,
-    subscription: newUser.subscription,
-    avatarUrl: newUser.avatarUrl,
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+      avatarUrl: newUser.avatarUrl,
+    },
+    token,
   };
 };
 
