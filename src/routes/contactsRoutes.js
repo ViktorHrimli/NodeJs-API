@@ -10,8 +10,12 @@ const {
   updateContacts,
   updateFavorite,
 } = require("../controllers/contactsContorller");
+// middlewars
+const {
+  mdlwValidation: { contactsWrap },
+} = require("../middlewars");
 
-const { contactsWrap } = require("../middlewars/middlewarValidation");
+// routers
 
 const router = express.Router();
 

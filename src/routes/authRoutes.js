@@ -12,9 +12,12 @@ const {
 } = require("../controllers/authController");
 
 // middlewares
-const { authWrapp } = require("../middlewars/middlewarValidation");
-const authMiddlewar = require("../middlewars/middlewarAuthToken");
+const {
+  authMiddlewar,
+  mdlwValidation: { authWrapp },
+} = require("../middlewars");
 
+// routers
 router.post("/signup", authWrapp(authSignUp));
 
 router.post("/login", authWrapp(authLogin));

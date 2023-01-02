@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
-const { ConflicktError } = require("../../helpers/ApiHandleError");
+const Joi = require("joi");
+
+const { handleMongooseError } = require("../../helpers/");
 
 const Shema = mongoose.Schema;
 
@@ -30,14 +32,45 @@ const contactsShema = new Shema(
       default: Date.now(),
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 // FIXME crashed app, this error not captured
-contactsShema.post("save", async function (err, data, next) {
-  if (err.name === "MongoServerError" && err.code === 11000) {
-    return next(new ConflicktError(err.message));
-  }
-  next();
+contactsShema.post("save", handleMongooseError);
+
+// ================== VALIDATION REQ BODY SCHEMA
+
+const postShema = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
+  email: Joi.string()
+    .email({
+      minDomainSegments: 1,
+      tlds: { allow: ["com", "net", "org"] },
+    })
+    .required(),
+  phone: Joi.string().min(13).required(),
+  favorite: Joi.boolean(),
 });
-module.exports = contactsShema;
+
+const putShema = Joi.object({
+  name: Joi.string().min(3).max(30),
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ["com", "net"] },
+  }),
+  phone: Joi.string().min(8).max(14),
+});
+
+const patchShema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
+
+const contactValidation = {
+  postShema,
+  putShema,
+  patchShema,
+};
+
+const Contact = mongoose.model("contact", contactsShema);
+
+module.exports = { Contact, contactValidation };

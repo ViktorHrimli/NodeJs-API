@@ -7,7 +7,9 @@ const contactsRouter = require("./src/routes/contactsRoutes");
 const authRouter = require("./src/routes/authRoutes");
 const avatarRouter = require("./src/routes/avatarsRouters");
 
-const { errorhandler, error404 } = require("./src/middlewars/middlewarError");
+const {
+  handleError: { error404, errorhandler },
+} = require("./src/middlewars");
 
 const app = express();
 

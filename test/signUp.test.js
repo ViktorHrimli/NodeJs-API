@@ -1,6 +1,6 @@
 const app = require("../app");
 const { authSignUp } = require("../src/controllers/authController");
-const { User } = require("../src/services/authServices");
+const { User } = require("../src/db/user/model");
 const mongoose = require("../src/db/index");
 
 describe("Service test signup controller", () => {
@@ -41,11 +41,6 @@ describe("Service test signup controller", () => {
   test("test by token", async () => {
     newUser = await authSignUp(req, res, next);
     expect(typeof newUser.token).toBe("string");
-
-    expect(newUser.user).toEqual({
-      email: "test@gmail.com",
-      subscription: "starter",
-    });
   });
   test("test by email and subscribe", async () => {
     expect(newUser.user).toEqual({

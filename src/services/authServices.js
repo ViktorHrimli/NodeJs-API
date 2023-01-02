@@ -1,17 +1,14 @@
-const mongoose = require("../db/index");
-// const { AutoraizedError } = require("../helpers/ApiHandleError");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const userShema = require("../db/user/model");
-const User = mongoose.model("user", userShema);
+const { User } = require("../db/user/model");
 
-const signInUser = async (body, res) => {
+const signInUser = async (body) => {
   const { email } = body;
   const findIsUser = await User.findOne({ email });
 
   if (findIsUser) {
-    res.status(409).json({ message: "Email in use" });
+    return null;
   }
 
   const newUser = await User.create({ ...body });
@@ -34,30 +31,25 @@ const signInUser = async (body, res) => {
   };
 };
 
-const loginUser = async (body, res) => {
+const loginUser = async (body) => {
   const { email, password } = body;
-  const isLogin = await User.findOne({ email });
-  if (!isLogin) {
-    return res.status(401).json({
-      status: "filed",
-      message: `Not found user with email:'${email}'!`,
-    });
-    // return new AutoraizedError(`Not found user with email:'${email}'!`);
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return null;
   }
 
-  if (!(await bcrypt.compare(password, isLogin.password))) {
-    return res.status(401).json({
-      status: "filed",
-      message: `Wrong email or password!`,
-    });
-    // throw new AutoraizedError(`Wrong email or password!`);
+  const comparePassword = await bcrypt.compare(password, user.password);
+
+  if (!comparePassword) {
+    return null;
   }
 
   const token = jwt.sign(
     {
-      id: isLogin._id,
-      email: isLogin.email,
-      subscription: isLogin.subscription,
+      id: user._id,
+      email: user.email,
+      subscription: user.subscription,
     },
     process.env.SECRET_WORD
   );
@@ -65,8 +57,8 @@ const loginUser = async (body, res) => {
   return {
     token,
     user: {
-      email: isLogin.email,
-      subscription: isLogin.subscription,
+      email: user.email,
+      subscription: user.subscription,
     },
   };
 };
@@ -104,7 +96,6 @@ const newAvatarUser = async (user, avatarUrl) => {
 module.exports = {
   signInUser,
   loginUser,
-  User,
   logOutUser,
   currentUser,
   updateUserSubscribe,

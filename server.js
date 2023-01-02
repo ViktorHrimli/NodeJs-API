@@ -1,6 +1,8 @@
 const app = require("./app");
 const mongoose = require("./src/db/index");
 
+mongoose.set("strictQuery", true);
+
 mongoose
   .connect(process.env.URL_DB)
   .then(() => {

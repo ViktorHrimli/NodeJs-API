@@ -1,15 +1,22 @@
-const shemaBody = require("../helpers/validationContacts");
-const userShema = require("../helpers/validationUser");
+const {
+  contactValidation: { patchShema, postShema, putShema },
+} = require("../db/contacts/model");
+
+const {
+  userValidation: { patchUserShema, postUserShema },
+} = require("../db/user/model");
+
+const { HttpError } = require("../helpers");
 
 const contactsWrap = (controller) => {
   return async (req, res, next) => {
     switch (req.method) {
       case "POST": {
-        const { error } = shemaBody.postShema.validate(req.body);
+        const { error } = postShema.validate(req.body);
 
         return !error
           ? controller(req, res)
-          : next(res.status(400).json({ message: error.message }));
+          : next(HttpError(400, error.message));
       }
       case "GET": {
         return controller(req, res);
@@ -17,23 +24,21 @@ const contactsWrap = (controller) => {
       case "PUT": {
         if (!req.body.name && !req.body.email && !req.body.phone) {
           return next(
-            res
-              .status(400)
-              .json({ message: "Empty fields, please enter correct request" })
+            HttpError(400, "Empty fields, please enter correct request")
           );
         }
-        const { error } = shemaBody.putShema.validate(req.body);
+        const { error } = putShema.validate(req.body);
 
         return !error
           ? controller(req, res)
-          : next(res.status(400).json({ message: error.message }));
+          : next(HttpError(400, error.message));
       }
       case "PATCH": {
-        const { error } = shemaBody.patchShema.validate(req.body);
+        const { error } = patchShema.validate(req.body);
 
         return !error
           ? controller(req, res)
-          : next(res.status(400).json({ message: error.message }));
+          : next(HttpError(400, error.message));
       }
       default: {
         return controller(req, res);
@@ -46,18 +51,18 @@ const authWrapp = (controller) => {
   return async (req, res, next) => {
     switch (req.method) {
       case "POST": {
-        const { error } = userShema.postUserShema.validate(req.body);
+        const { error } = postUserShema.validate(req.body);
 
         return !error
           ? controller(req, res)
-          : next(res.status(400).json({ message: error.message }));
+          : next(HttpError(400, error.message));
       }
       case "PATCH": {
-        const { error } = userShema.patchUserShema.validate(req.body);
+        const { error } = patchUserShema.validate(req.body);
 
         return !error
           ? controller(req, res)
-          : next(res.status(400).json({ message: error.message }));
+          : next(HttpError(400, error.message));
       }
       default: {
         return controller(res, req, next);

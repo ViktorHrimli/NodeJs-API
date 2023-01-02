@@ -7,6 +7,7 @@ const uploadDir = path.resolve("./public/avatars");
 const resize = require("../utils/resizeImg");
 
 const { success } = require("../utils/codeResponse");
+
 const {
   loginUser,
   signInUser,
@@ -21,14 +22,25 @@ const authSignUp = async (req, res, next) => {
     s: "250",
     protocol: "http",
   });
-  const newUser = await signInUser({ ...req.body, avatarUrl }, res);
 
+  const newUser = await signInUser({ ...req.body, avatarUrl });
+
+  if (!newUser) {
+    return res.status(409).json({ message: "Email in use" });
+  }
   res.status(201).json(success(201, newUser));
   return newUser;
 };
 
 const authLogin = async (req, res, next) => {
-  const newUser = await loginUser(req.body, res);
+  const newUser = await loginUser(req.body);
+
+  if (!newUser) {
+    return res.status(401).json({
+      status: "filed",
+      message: `Wrrong email or password!`,
+    });
+  }
 
   res.status(200).json(success(200, newUser));
 };

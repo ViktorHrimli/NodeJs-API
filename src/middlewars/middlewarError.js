@@ -1,10 +1,6 @@
-const { MyNewError } = require("../helpers/ApiHandleError");
-
-const errorhandler = (err, _, res) => {
-  if (err instanceof MyNewError) {
-    return res.status(err.status).json({ message: err.message });
-  }
-  res.status(500).json({ message: err.message });
+const errorhandler = (err, req, res, next) => {
+  const { status = 500, message = "Server error" } = err;
+  res.status(status).json({ message });
 };
 
 const error404 = (_, res, __) => {
