@@ -1,7 +1,10 @@
 const express = require("express");
-const isValidId = require("../middlewars/middlewarValid_Id");
-const authMiddlewar = require("../middlewars/middlewarAuthToken");
 
+// shema valid
+const {
+  contactValidation: { patchShema, postShema, putShema },
+} = require("../db/contacts/model");
+//
 const {
   deleteContacts,
   getContacts,
@@ -11,26 +14,35 @@ const {
   updateFavorite,
 } = require("../controllers/contactsContorller");
 // middlewars
-const {
-  mdlwValidation: { contactsWrap },
-} = require("../middlewars");
+
+const { isValidId, authToken, wrapper, validate } = require("../middlewars");
 
 // routers
 
 const router = express.Router();
 
-router.use(authMiddlewar);
+router.use(authToken);
 
-router.get("/", contactsWrap(getContacts));
+router.get("/", wrapper(getContacts));
 
-router.get("/:contactId", isValidId, contactsWrap(getContactsId));
+router.get("/:contactId", isValidId, wrapper(getContactsId));
 
-router.post("/", contactsWrap(postContacts));
+router.post("/", validate(postShema), wrapper(postContacts));
 
-router.delete("/:contactId", isValidId, contactsWrap(deleteContacts));
+router.delete("/:contactId", isValidId, wrapper(deleteContacts));
 
-router.put("/:contactId", isValidId, contactsWrap(updateContacts));
+router.put(
+  "/:contactId",
+  isValidId,
+  validate(putShema),
+  wrapper(updateContacts)
+);
 
-router.patch("/:contactId/favorite", isValidId, contactsWrap(updateFavorite));
+router.patch(
+  "/:contactId/favorite",
+  isValidId,
+  validate(patchShema),
+  wrapper(updateFavorite)
+);
 
 module.exports = router;

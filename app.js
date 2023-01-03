@@ -8,8 +8,8 @@ const authRouter = require("./src/routes/authRoutes");
 const avatarRouter = require("./src/routes/avatarsRouters");
 
 const {
-  handleError: { error404, errorhandler },
-} = require("./src/middlewars");
+  Error: { error404, errorhandler },
+} = require("./src/helpers");
 
 const app = express();
 

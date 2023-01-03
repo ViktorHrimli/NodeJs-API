@@ -1,7 +1,8 @@
 const express = require("express");
-const upload = require("../storage/storage");
-
 const router = express.Router();
+// img
+const upload = require("../storage/storage");
+// controllers
 const {
   authLogin,
   authSignUp,
@@ -11,28 +12,32 @@ const {
   authAvatarUpdate,
 } = require("../controllers/authController");
 
-// middlewares
+// shema validation
+
 const {
-  authMiddlewar,
-  mdlwValidation: { authWrapp },
-} = require("../middlewars");
+  userValidation: { patchUserShema, postUserShema },
+} = require("../db/user/model");
+
+// middlewares
+const { authToken, wrapper, validate } = require("../middlewars");
 
 // routers
-router.post("/signup", authWrapp(authSignUp));
+router.post("/signup", validate(postUserShema), wrapper(authSignUp));
 
-router.post("/login", authWrapp(authLogin));
+router.post("/login", validate(postUserShema), wrapper(authLogin));
 
 router.patch(
   "/avatars",
-  authMiddlewar,
+  validate(patchUserShema),
+  authToken,
   upload.single("avatar"),
   authAvatarUpdate
 );
 
-router.patch("/", authMiddlewar, authWrapp(authUpdate));
+router.patch("/", validate(patchUserShema), authToken, wrapper(authUpdate));
 
-router.get("/current", authMiddlewar, authCurrentUser);
+router.get("/current", authToken, authCurrentUser);
 
-router.all("/logout", authMiddlewar, authLogOut);
+router.all("/logout", authToken, authLogOut);
 
 module.exports = router;

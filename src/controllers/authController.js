@@ -1,6 +1,8 @@
 const gravatar = require("gravatar");
 const fs = require("fs/promises");
+
 const path = require("path");
+// path dir
 const tmpPath = path.resolve("./tmp");
 const uploadDir = path.resolve("./public/avatars");
 
@@ -28,6 +30,7 @@ const authSignUp = async (req, res, next) => {
   if (!newUser) {
     return res.status(409).json({ message: "Email in use" });
   }
+
   res.status(201).json(success(201, newUser));
   return newUser;
 };

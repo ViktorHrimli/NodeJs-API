@@ -4,13 +4,6 @@ const bcrypt = require("bcrypt");
 const { User } = require("../db/user/model");
 
 const signInUser = async (body) => {
-  const { email } = body;
-  const findIsUser = await User.findOne({ email });
-
-  if (findIsUser) {
-    return null;
-  }
-
   const newUser = await User.create({ ...body });
 
   const token = jwt.sign(

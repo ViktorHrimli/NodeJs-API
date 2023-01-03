@@ -5,6 +5,12 @@ const { handleMongooseError } = require("../../helpers/");
 
 const Shema = mongoose.Schema;
 
+const emailRegexp =
+  // eslint-disable-next-line no-useless-escape
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const phoneRegEx = /(?=.*\+[0-9]{3}\s?[0-9]{2}\s?[0-9]{3}\s?[0-9]{4,5}$)/gm;
+
 const contactsShema = new Shema(
   {
     name: {
@@ -14,10 +20,12 @@ const contactsShema = new Shema(
     email: {
       type: String,
       required: [true, "Set email for contact"],
+      match: emailRegexp,
       unique: true,
     },
     phone: {
       type: String,
+      match: [phoneRegEx, "Must be +380999999999"],
     },
     owner: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -48,7 +56,7 @@ const postShema = Joi.object({
       tlds: { allow: ["com", "net", "org"] },
     })
     .required(),
-  phone: Joi.string().min(13).required(),
+  phone: Joi.string().required(),
   favorite: Joi.boolean(),
 });
 
@@ -58,7 +66,7 @@ const putShema = Joi.object({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net"] },
   }),
-  phone: Joi.string().min(8).max(14),
+  phone: Joi.string().min(13),
 });
 
 const patchShema = Joi.object({

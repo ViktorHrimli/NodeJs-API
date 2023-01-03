@@ -1,11 +1,11 @@
-const authMiddlewar = require("./middlewarAuthToken");
-const handleError = require("./middlewarError");
-const isValidId = require("./middlewarValid_Id");
-const mdlwValidation = require("./middlewarValidation");
+const authToken = require("./authToken");
+const isValidId = require("./valid_Id");
+const wrapper = require("./wrapper");
+const validate = require("./validation");
 
 module.exports = {
-  authMiddlewar,
-  handleError,
+  authToken,
   isValidId,
-  mdlwValidation,
+  wrapper,
+  validate,
 };

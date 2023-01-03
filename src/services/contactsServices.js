@@ -23,14 +23,6 @@ const removeContact = async (id, owner) => {
 };
 
 const addContact = async (body) => {
-  // HACK, captured error unique email
-  const { email } = body;
-  const findUser = await Contact.findOne({ email });
-
-  if (findUser) {
-    return null;
-  }
-
   return await Contact.create(body);
 };
 
