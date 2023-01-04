@@ -1,46 +1,48 @@
-const mongoose = require("../db/index");
-const {
-  AutoraizedError,
-  ConflicktError,
-} = require("../helpers/ApiHandleError");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const userShema = require("../db/user/model");
-const User = mongoose.model("user", userShema);
+const { User } = require("../db/user/model");
 
-const signInUser = async (body, next) => {
-  const { email } = body;
-  const findIsUser = await User.findOne({ email });
+const signInUser = async (body) => {
+  const newUser = await User.create({ ...body });
 
-  if (findIsUser) {
-    return next(new ConflicktError("Email in use"));
-  }
-
-  const newUser = await User.create(body, { runValidators: true });
+  const token = jwt.sign(
+    {
+      id: newUser._id,
+      email: newUser.email,
+      subscription: newUser.subscription,
+    },
+    process.env.SECRET_WORD
+  );
 
   return {
-    email: newUser.email,
-    subscription: newUser.subscription,
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+    },
+    token,
   };
 };
 
 const loginUser = async (body) => {
   const { email, password } = body;
-  const isLogin = await User.findOne({ email });
-  if (!isLogin) {
-    throw new AutoraizedError(`Not found user with email:'${email}'!`);
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return null;
   }
 
-  if (!(await bcrypt.compare(password, isLogin.password))) {
-    throw new AutoraizedError(`Wrong email or password!`);
+  const comparePassword = await bcrypt.compare(password, user.password);
+
+  if (!comparePassword) {
+    return null;
   }
 
   const token = jwt.sign(
     {
-      id: isLogin._id,
-      email: isLogin.email,
-      subscription: isLogin.subscription,
+      id: user._id,
+      email: user.email,
+      subscription: user.subscription,
     },
     process.env.SECRET_WORD
   );
@@ -48,8 +50,8 @@ const loginUser = async (body) => {
   return {
     token,
     user: {
-      email: isLogin.email,
-      subscription: isLogin.subscription,
+      email: user.email,
+      subscription: user.subscription,
     },
   };
 };
@@ -78,11 +80,17 @@ const currentUser = async (newToken, { _id, email, subscription }) => {
   };
 };
 
+const newAvatarUser = async (user, avatarUrl) => {
+  const updateUser = { ...user, avatarUrl };
+
+  return await User.findOneAndUpdate({ _id: user._id }, updateUser);
+};
+
 module.exports = {
   signInUser,
   loginUser,
-  User,
   logOutUser,
   currentUser,
   updateUserSubscribe,
+  newAvatarUser,
 };

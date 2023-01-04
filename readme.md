@@ -1,31 +1,69 @@
-## GoIT Node.js Course Template Homework
+# Contacts Book Api
 
-Виконайте форк цього репозиторію для виконання домашніх завдань (2-6)
-Форк створить репозиторій на вашому http://github.com
+### Overview
 
-Додайте ментора до колаборації
+#### This is services by registrations users and saves yours contacts
 
-Для кожної домашньої роботи створюйте свою гілку.
+### Geting Started
 
-- hw02
-- hw03
-- hw04
-- hw05
-- hw06
+#### npm run start:dev => development
 
-Кожна нова гілка для др повинна робитися з master
+#### npm start => production
 
-Після того, як ви закінчили виконувати домашнє завдання у своїй гілці, необхідно зробити пулл-реквест (PR). Потім додати ментора для рев'ю коду. Тільки після того, як ментор заапрувить PR, ви можете виконати мердж гілки з домашнім завданням у майстер.
+#### npm run test => start jest test
 
-Уважно читайте коментарі ментора. Виправте зауваження та зробіть коміт у гілці з домашнім завданням. Зміни підтягнуться у PR автоматично після того, як ви відправите коміт з виправленнями на github
-Після виправлення знову додайте ментора на рев'ю коду.
+## Users
 
-- При здачі домашньої роботи є посилання на PR
-- JS-код чистий та зрозумілий, для форматування використовується Prettier
+Users services is intended for registration user, login, logout, get current user, update user profile and avatar.
 
-### Команди:
+#### Path Api Users
 
-- `npm start` &mdash; старт сервера в режимі production
-- `npm run start:dev` &mdash; старт сервера в режимі розробки (development)
-- `npm run lint` &mdash; запустити виконання перевірки коду з eslint, необхідно виконувати перед кожним PR та виправляти всі помилки лінтера
-- `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними виправленнями простих помилок
+##### Base path by users "api/users"
+
+| Path     | Method | Endpoint                 |
+| -------- | ------ | ------------------------ |
+| /signup  | POST   | Create new User          |
+| /login   | POST   | Enter user and get token |
+| /current | GET    | Get cuurent user         |
+| /logout  | ALL    | Logout cuurent user      |
+| /avatars | PATCH  | Update user avatar       |
+| /        | PATCH  | Update user information  |
+
+## Items
+
+| Field     | Type   | Discriptions             | Required           |
+| --------- | ------ | ------------------------ | ------------------ |
+| Email     | String | Unique user email        | true               |
+| Password  | String | Password user            | true               |
+| Subscribe | String | [starter, business, pro] | default = starter  |
+| Avatar    | URL    | Avatar url               | default = gravatar |
+| Token     | String | Update user avatar       | default = null     |
+| \_id      | Obj_id | Unique key MongoDb       | default = MongoDb  |
+
+## Contacts
+
+Contacts services is intended for get all contacts, get contacts by id, delet, update users contacts.
+
+#### Path Api Contacts
+
+##### Base path by users "api/contacts"
+
+| Path          | Method | Endpoint                 |
+| ------------- | ------ | ------------------------ |
+| /             | Get    | Get all contacts         |
+| /:id          | Get    | Get contacts by id       |
+| /             | Post   | Create new contacts      |
+| /:id          | Delete | Delete contacts          |
+| /:id          | PATCH  | Update contacts info     |
+| /:id/favorite | PATCH  | Update contacts favorite |
+
+## Items
+
+| Field    | Type    | Discriptions          | Required          |
+| -------- | ------- | --------------------- | ----------------- |
+| Email    | String  | Unique contacts email | true              |
+| Name     | String  | Contacts UserName     | true              |
+| Phone    | String  | +38 XXX XXX XX        | true              |
+| Favorite | Boolean | Favorite Contacts     | default = false   |
+| Owner    | Obj_id  | User id               | default = MongoDb |
+| \_id     | Obj_id  | Unique key MongoDb    | default = MongoDb |

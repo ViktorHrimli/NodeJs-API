@@ -1,47 +1,15 @@
-class MyNewError extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 404;
-    this.message = message;
-  }
-}
-
-class ValidationError extends MyNewError {
-  constructor(message) {
-    super(message);
-    this.status = 400;
-    this.message = message;
-  }
-}
-
-class WrongParametrError extends MyNewError {
-  constructor(message) {
-    super(message);
-    this.status = 400;
-    this.message = message;
-  }
-}
-
-class AutoraizedError extends MyNewError {
-  constructor(message) {
-    super(message);
-    this.status = 401;
-    this.message = message;
-  }
-}
-
-class ConflicktError extends MyNewError {
-  constructor(message) {
-    super(message);
-    this.status = 409;
-    this.message = message;
-  }
-}
-
-module.exports = {
-  ValidationError,
-  WrongParametrError,
-  AutoraizedError,
-  MyNewError,
-  ConflicktError,
+const messages = {
+  400: "Bad Request",
+  401: "Unauthorized",
+  403: "Forbidden",
+  404: "Not found",
+  409: "Conflict",
 };
+
+const HttpError = (status, message = messages[status]) => {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+};
+
+module.exports = HttpError;

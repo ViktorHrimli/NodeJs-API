@@ -1,10 +1,4 @@
-const mongoose = require("../db/index");
-const contactsShema = require("../db/contacts/model");
-const Contact = mongoose.model("contact", contactsShema);
-
-const options = {
-  createdAt: 0,
-};
+const { Contact } = require("../db/contacts/model");
 
 const listContacts = async (owner, page = 1, limit = 20, favorite = 1) => {
   let count = 0;
@@ -14,17 +8,14 @@ const listContacts = async (owner, page = 1, limit = 20, favorite = 1) => {
     .skip(skip)
     .limit(limit)
     .sort({ favorite: favorite === 1 ? 0 : -1 })
-    .select(options);
+    .select({ createdAt: 0 });
 };
 
 const getContactById = async (id, owner) => {
-  return await Contact.findOne(
-    {
-      _id: id,
-      owner,
-    },
-    { runValidators: true }
-  );
+  return await Contact.findOne({
+    _id: id,
+    owner,
+  });
 };
 
 const removeContact = async (id, owner) => {
@@ -32,12 +23,6 @@ const removeContact = async (id, owner) => {
 };
 
 const addContact = async (body) => {
-  // HACK, captured error unique email
-  const { email } = body;
-  const findUser = await Contact.findOne({ email });
-  if (findUser) {
-    return null;
-  }
   return await Contact.create(body);
 };
 
