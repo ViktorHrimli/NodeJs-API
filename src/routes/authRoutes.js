@@ -10,6 +10,7 @@ const {
   authCurrentUser,
   authUpdate,
   authAvatarUpdate,
+  authTokenVerifyUser,
 } = require("../controllers/authController");
 
 // shema validation
@@ -22,6 +23,8 @@ const {
 const { authToken, wrapper, validate } = require("../middlewars");
 
 // routers
+router.get("/verify/:verificationToken", authTokenVerifyUser);
+
 router.post("/signup", validate(postUserShema), wrapper(authSignUp));
 
 router.post("/login", validate(postUserShema), wrapper(authLogin));

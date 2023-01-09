@@ -1,9 +1,11 @@
-const { success } = require("../utils/codeResponse");
+const {
+  code: { success },
+} = require("../utils");
 const services = require("../services/contactsServices");
 
 const getContacts = async (req, res, next) => {
-  const { _id: owner } = await req.user;
-  const { page, limit, favorite } = await req.query;
+  const { _id: owner } = req.user;
+  const { page, limit, favorite } = req.query;
 
   const userList = await services.listContacts(
     owner,

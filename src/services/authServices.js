@@ -56,6 +56,15 @@ const loginUser = async (body) => {
   };
 };
 
+const serviceVerificationUserToken = async (verificationToken) => {
+  const user = await User.findOneAndUpdate(verificationToken, {
+    verificationToken: null,
+    verify: true,
+  });
+
+  return user;
+};
+
 const updateUserSubscribe = async (id, body) => {
   const newUser = await User.findByIdAndUpdate(id, body, {
     new: true,
@@ -93,4 +102,5 @@ module.exports = {
   currentUser,
   updateUserSubscribe,
   newAvatarUser,
+  serviceVerificationUserToken,
 };

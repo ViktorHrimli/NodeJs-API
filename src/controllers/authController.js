@@ -1,14 +1,17 @@
 const gravatar = require("gravatar");
 const fs = require("fs/promises");
+const { v4: uuidv4 } = require("uuid");
 
 const path = require("path");
 // path dir
 const tmpPath = path.resolve("./tmp");
 const uploadDir = path.resolve("./public/avatars");
 
-const resize = require("../utils/resizeImg");
-
-const { success } = require("../utils/codeResponse");
+const {
+  code: { success },
+  resize,
+  createEmailServices,
+} = require("../utils");
 
 const {
   loginUser,
@@ -17,19 +20,28 @@ const {
   currentUser,
   updateUserSubscribe,
   newAvatarUser,
+  serviceVerificationUserToken,
 } = require("../services/authServices");
 
 const authSignUp = async (req, res, next) => {
-  const avatarUrl = gravatar.url(req.body.email, {
+  const { email } = req.body;
+
+  const avatarUrl = gravatar.url(email, {
     s: "250",
     protocol: "http",
   });
 
-  const newUser = await signInUser({ ...req.body, avatarUrl });
+  const newUser = await signInUser({
+    ...req.body,
+    avatarUrl,
+    verificationToken: uuidv4(),
+  });
 
   if (!newUser) {
     return res.status(409).json({ message: "Email in use" });
   }
+
+  await createEmailServices(email);
 
   res.status(201).json(success(201, newUser));
   return newUser;
@@ -46,6 +58,15 @@ const authLogin = async (req, res, next) => {
   }
 
   res.status(200).json(success(200, newUser));
+};
+
+const authTokenVerifyUser = async (req, res, next) => {
+  const { verificationToken } = req.params;
+  const user = await serviceVerificationUserToken(verificationToken);
+  if (!user) {
+    return res.status(400).json({ message: "Not found", status: "Filed" });
+  }
+  res.status(200).json({ message: "OK" });
 };
 
 const authLogOut = async (req, res, next) => {
@@ -98,4 +119,5 @@ module.exports = {
   authCurrentUser,
   authUpdate,
   authAvatarUpdate,
+  authTokenVerifyUser,
 };
