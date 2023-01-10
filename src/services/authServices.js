@@ -19,14 +19,21 @@ const signInUser = async (body) => {
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      verificationToken: newUser.verificationToken,
     },
     token,
   };
 };
 
-const loginUser = async (body) => {
+const loginUser = async (body, res) => {
   const { email, password } = body;
   const user = await User.findOne({ email });
+
+  if (!user.verify) {
+    return res
+      .status(403)
+      .json({ message: "User must be verificated", status: "filed" });
+  }
 
   if (!user) {
     return null;

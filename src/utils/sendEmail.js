@@ -15,6 +15,7 @@ const config = {
 const transporter = nodemailer.createTransport(config);
 
 const createEmailServices = async (userEmail, token) => {
+  console.log(token);
   const emailOptions = {
     from: MY_EMAIL,
     subject: "Nodemailer test",
