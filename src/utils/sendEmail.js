@@ -1,21 +1,30 @@
-const sgMail = require("@sendgrid/mail");
+const nodemailer = require("nodemailer");
 
-sgMail.setApiKey(process.env.EMAIL_KEY_SERVICE);
+const { MY_EMAIL, HOST, PORT, PASSWORD_META_UA } = process.env;
 
-const createEmailServices = async (userEmail) => {
-  console.log(process.env.EMAIL_KEY_SERVICE);
-  const msg = {
-    to: userEmail,
-    from: "viktorhrimli101@gmail.com",
-    subject: "Sending with SendGrid is Fun",
-    text: "Verify Email",
-    html: "<strong>CLick link to verify your email</strong>",
+const config = {
+  host: "smtp.meta.ua",
+  port: 465,
+  secure: true,
+  auth: {
+    user: MY_EMAIL,
+    pass: PASSWORD_META_UA,
+  },
+};
+
+const transporter = nodemailer.createTransport(config);
+
+const createEmailServices = async (userEmail, token) => {
+  const emailOptions = {
+    from: MY_EMAIL,
+    subject: "Nodemailer test",
+    html: `<strong>CLick <a href=${HOST}:${PORT}/api/users/verify/${token}>link</a> to verify your email</strong>`,
   };
-
-  return await sgMail
-    .send(msg)
-    .then((data) => console.log("Email success send"))
-    .catch((error) => console.log(error.message));
+  try {
+    await transporter.sendMail({ ...emailOptions, to: userEmail });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 module.exports = createEmailServices;

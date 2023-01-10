@@ -41,7 +41,7 @@ const authSignUp = async (req, res, next) => {
     return res.status(409).json({ message: "Email in use" });
   }
 
-  await createEmailServices(email);
+  await createEmailServices(email, newUser.verificationToken);
 
   res.status(201).json(success(201, newUser));
   return newUser;
@@ -62,7 +62,13 @@ const authLogin = async (req, res, next) => {
 
 const authTokenVerifyUser = async (req, res, next) => {
   const { verificationToken } = req.params;
+  const { email } = req.body;
+
   const user = await serviceVerificationUserToken(verificationToken);
+  if (user.verify) {
+    return res.status(404).json({ message: "Not found", status: "Filed" });
+  }
+
   if (!user) {
     return res.status(400).json({ message: "Not found", status: "Filed" });
   }
