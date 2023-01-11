@@ -15,11 +15,10 @@ const config = {
 const transporter = nodemailer.createTransport(config);
 
 const createEmailServices = async (userEmail, token) => {
-  console.log(token);
   const emailOptions = {
     from: MY_EMAIL,
     subject: "Nodemailer test",
-    html: `<strong>CLick <a href=${HOST}:${PORT}/api/users/verify/${token}>link</a> to verify your email</strong>`,
+    html: `<Button style="padding: 15px; border-radius: 8px; background-color: blueviolet; cursor: pointer;" >Press on confirm email <a style="color: #fff;" href=${HOST}:${PORT}/api/users/verify/${token}>${userEmail}</a></Button>`,
   };
   try {
     await transporter.sendMail({ ...emailOptions, to: userEmail });

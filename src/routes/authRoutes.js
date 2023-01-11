@@ -11,12 +11,13 @@ const {
   authUpdate,
   authAvatarUpdate,
   authTokenVerifyUser,
+  authRepeatadlyEmail,
 } = require("../controllers/authController");
 
 // shema validation
 
 const {
-  userValidation: { patchUserShema, postUserShema },
+  userValidation: { patchUserShema, postUserShema, verificationTokenSchema },
 } = require("../db/user/model");
 
 // middlewares
@@ -28,6 +29,12 @@ router.get("/verify/:verificationToken", authTokenVerifyUser);
 router.post("/signup", validate(postUserShema), wrapper(authSignUp));
 
 router.post("/login", validate(postUserShema), wrapper(authLogin));
+
+router.post(
+  "/verify",
+  validate(verificationTokenSchema),
+  wrapper(authRepeatadlyEmail)
+);
 
 router.patch(
   "/avatars",

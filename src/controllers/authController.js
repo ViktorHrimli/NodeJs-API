@@ -21,7 +21,10 @@ const {
   updateUserSubscribe,
   newAvatarUser,
   serviceVerificationUserToken,
+  serviceRepeatadlyEmailSend,
 } = require("../services/authServices");
+
+// USer REgister
 
 const authSignUp = async (req, res, next) => {
   const { email } = req.body;
@@ -49,6 +52,8 @@ const authSignUp = async (req, res, next) => {
   return newUser;
 };
 
+// USER LOGIN
+
 const authLogin = async (req, res, next) => {
   const newUser = await loginUser(req.body, res);
 
@@ -62,12 +67,17 @@ const authLogin = async (req, res, next) => {
   res.status(200).json(success(200, newUser));
 };
 
+// Verificated Token
+
 const authTokenVerifyUser = async (req, res, next) => {
   const { verificationToken } = req.params;
 
   const user = await serviceVerificationUserToken(verificationToken);
   if (user.verify) {
-    return res.status(404).json({ message: "wdawdaw", status: "Filed" });
+    return res.status(404).json({
+      message: "Verification has already been passed! Token invalid!",
+      status: "Filed",
+    });
   }
 
   if (!user) {
@@ -75,6 +85,24 @@ const authTokenVerifyUser = async (req, res, next) => {
   }
   res.status(200).json({ message: "Verification successful" });
 };
+
+// User repetedly email
+
+const authRepeatadlyEmail = async (req, res, next) => {
+  const user = await serviceRepeatadlyEmailSend(req.body.email);
+  if (user === false) {
+    return res.status(400).json({ message: "Not found user", status: "Filed" });
+  }
+  if (user === null) {
+    return res.status(400).json({
+      message: "Verification has already been passed",
+      status: "Filed",
+    });
+  }
+  res.status(200).json({ message: "Verification email sent" });
+};
+
+// User LogOUT
 
 const authLogOut = async (req, res, next) => {
   const { id } = req.user;
@@ -85,11 +113,15 @@ const authLogOut = async (req, res, next) => {
   res.status(204).json(success(204, "No Content"));
 };
 
+// Get Current User
+
 const authCurrentUser = async (req, res, next) => {
   const user = await currentUser(req.token, req.user);
 
   res.status(200).json(success(200, user));
 };
+
+// User subscribe update
 
 const authUpdate = async (req, res, next) => {
   const { id } = req.user;
@@ -97,6 +129,8 @@ const authUpdate = async (req, res, next) => {
 
   res.status(200).json(success(200, newUser));
 };
+
+// User avatar update
 
 const authAvatarUpdate = async (req, res, next) => {
   if (!req.file) {
@@ -127,4 +161,5 @@ module.exports = {
   authUpdate,
   authAvatarUpdate,
   authTokenVerifyUser,
+  authRepeatadlyEmail,
 };

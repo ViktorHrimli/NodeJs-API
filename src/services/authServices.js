@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 
 const { User } = require("../db/user/model");
 
+const { createEmailServices } = require("../utils");
+
 const signInUser = async (body) => {
   const newUser = await User.create({ ...body });
 
@@ -72,6 +74,18 @@ const serviceVerificationUserToken = async (verificationToken) => {
   return user;
 };
 
+const serviceRepeatadlyEmailSend = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    return false;
+  }
+  if (user.verify) {
+    return null;
+  }
+  await createEmailServices(email, user.verificationToken);
+  return user;
+};
+
 const updateUserSubscribe = async (id, body) => {
   const newUser = await User.findByIdAndUpdate(id, body, {
     new: true,
@@ -110,4 +124,5 @@ module.exports = {
   updateUserSubscribe,
   newAvatarUser,
   serviceVerificationUserToken,
+  serviceRepeatadlyEmailSend,
 };
