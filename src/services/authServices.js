@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 
 const { User } = require("../db/user/model");
 
+const { createEmailServices } = require("../utils");
+
 const signInUser = async (body) => {
   const newUser = await User.create({ ...body });
 
@@ -19,14 +21,21 @@ const signInUser = async (body) => {
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      verificationToken: newUser.verificationToken,
     },
     token,
   };
 };
 
-const loginUser = async (body) => {
+const loginUser = async (body, res) => {
   const { email, password } = body;
   const user = await User.findOne({ email });
+
+  if (!user.verify) {
+    return res
+      .status(403)
+      .json({ message: "User must be verificated", status: "filed" });
+  }
 
   if (!user) {
     return null;
@@ -54,6 +63,27 @@ const loginUser = async (body) => {
       subscription: user.subscription,
     },
   };
+};
+
+const serviceVerificationUserToken = async (verificationToken) => {
+  const user = await User.findOneAndUpdate(verificationToken, {
+    verificationToken: null,
+    verify: true,
+  });
+
+  return user;
+};
+
+const serviceRepeatadlyEmailSend = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    return false;
+  }
+  if (user.verify) {
+    return null;
+  }
+  await createEmailServices(email, user.verificationToken);
+  return user;
 };
 
 const updateUserSubscribe = async (id, body) => {
@@ -93,4 +123,6 @@ module.exports = {
   currentUser,
   updateUserSubscribe,
   newAvatarUser,
+  serviceVerificationUserToken,
+  serviceRepeatadlyEmailSend,
 };

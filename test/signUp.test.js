@@ -32,6 +32,8 @@ describe("Service test signup controller", () => {
         console.log(error.message);
         process.exit(1);
       });
+
+    newUser = await authSignUp(req, res, next);
   });
 
   afterAll(async () => {
@@ -39,9 +41,9 @@ describe("Service test signup controller", () => {
   });
 
   test("test by token", async () => {
-    newUser = await authSignUp(req, res, next);
     expect(typeof newUser.token).toBe("string");
   });
+
   test("test by email and subscribe", async () => {
     expect(newUser.user).toEqual({
       email: "test@gmail.com",

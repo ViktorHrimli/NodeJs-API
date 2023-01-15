@@ -6,6 +6,8 @@ const HttpError = require("../helpers/ApiHandleError");
 
 const { SECRET_WORD } = process.env;
 
+//
+
 const authMiddlewar = async (req, res, next) => {
   const { authorization = "" } = req.headers;
 
@@ -22,8 +24,10 @@ const authMiddlewar = async (req, res, next) => {
     if (!user) {
       next(HttpError(401, "Invalid token"));
     }
+
     req.token = token;
     req.user = user;
+
     next();
   } catch (error) {
     next(HttpError(401, "Invalid token"));

@@ -23,6 +23,14 @@ const userShema = new Shema(
       enum: subscribe,
       default: "starter",
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
     token: {
       type: String,
       default: null,
@@ -61,9 +69,19 @@ const patchUserShema = Joi.object({
   avatarUrl: Joi.string(),
 });
 
+const verificationTokenSchema = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 1,
+      tlds: { allow: ["com", "net", "org"] },
+    })
+    .required(),
+});
+
 const userValidation = {
   postUserShema,
   patchUserShema,
+  verificationTokenSchema,
 };
 
 const User = mongoose.model("user", userShema);

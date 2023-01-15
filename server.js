@@ -3,10 +3,12 @@ const mongoose = require("./src/db/index");
 
 mongoose.set("strictQuery", true);
 
+const { URL_DB, PORT } = process.env;
+
 mongoose
-  .connect(process.env.URL_DB)
+  .connect(URL_DB)
   .then(() => {
-    app.listen(process.env.PORT || 3001, () => {
+    app.listen(PORT || 3001, () => {
       console.log("Server running. Use our API on port: 3000");
     });
     console.log("Database connection successful");
